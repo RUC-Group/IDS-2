@@ -1,17 +1,46 @@
-from tkinter.tix import INTEGER
 import cv2
 import numpy as np
 from PIL import Image
 from keras import models
 import tensorflow as tf
+import threading
+import socket
 
-model = models.load_model('C:/Users/Albi/OneDrive/RUC NOTER/4th semester/Interactive Digital Systems/IDS Mini-project/IDS project 2/keras_model.h5')
+UDP_IP = "127.0.0.1"
+UDP_PORT = 6565
+
+
+
+sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # UDP
+sock.bind((UDP_IP, UDP_PORT))
+
+
+model = models.load_model("Python/keras_model.h5")
 video = cv2.VideoCapture(0)
 readPlayerInput = True
 waitForHost = False
 playerScore = 0
 
-while True:
+def listen_to_udp():
+    while True:
+        data, addr = sock.recvfrom(1024)  # buffer size is 1024 bytes
+        print(f'\nIncoming message: {data.decode("utf-8")}')
+
+
+def listen_to_input():
+    while True:
+        message = input('Chat input: ')
+        sock.sendto(bytes(str(message), encoding='utf8'), (UDP_IP, 6566))
+
+if __name__ == "__main__":
+    t1 = threading.Thread(target=listen_to_input, args=())
+    t2 = threading.Thread(target=listen_to_udp, args=())
+
+    t1.start()
+    t2.start()
+
+
+while False:
 
         key=cv2.waitKey(1)
 
