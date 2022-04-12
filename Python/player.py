@@ -40,7 +40,7 @@ if __name__ == "__main__":
     t2.start()
 
 
-while False:
+while True:
 
         key=cv2.waitKey(1)
 
