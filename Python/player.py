@@ -31,7 +31,10 @@ def listen_to_udp():
         data, addr = sock.recvfrom(1024)  # buffer size is 1024 bytes
         print(f'\nIncoming message: {data.decode("utf-8")}')
         if data.decode("utf-8") == "received":
+                global playerReady
                 playerReady = False
+                
+                global readPlayerInput
                 readPlayerInput = True
 
 
@@ -55,6 +58,7 @@ while True:
         if playerReady:
                 sock.sendto(bytes(str("ready"), encoding='utf8'), (HOST_IP, HOST_PORT))
                 time.sleep(3)
+
         
         if readPlayerInput:
                 _, frame = video.read()
