@@ -6,8 +6,11 @@ import tensorflow as tf
 import threading
 import socket
 
-UDP_IP = "127.0.0.1"
-UDP_PORT = 6565
+UDP_IP = "172.20.10.2"
+UDP_PORT = 6566
+
+HOST_IP = "172.20.10.10"
+HOST_PORT = 6565
 
 
 
@@ -15,7 +18,7 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # UDP
 sock.bind((UDP_IP, UDP_PORT))
 
 
-model = models.load_model("Python/keras_model.h5")
+model = models.load_model("keras_model.h5")
 video = cv2.VideoCapture(0)
 readPlayerInput = True
 waitForHost = False
@@ -30,7 +33,7 @@ def listen_to_udp():
 def listen_to_input():
     while True:
         message = input('Chat input: ')
-        sock.sendto(bytes(str(message), encoding='utf8'), (UDP_IP, 6566))
+        sock.sendto(bytes(str(message), encoding='utf8'), (HOST_IP, HOST_PORT))
 
 if __name__ == "__main__":
     t1 = threading.Thread(target=listen_to_input, args=())
@@ -69,6 +72,8 @@ while True:
 
                         #[PROJECT] TRANSMISSION OF PREDICTION TO HOST:
                         print("Hand gestuqre to send: " + labels[np.argmax(prediction)])
+                        sock.sendto(bytes(str(labels[np.argmax(prediction)]), encoding='utf8'), (HOST_IP, HOST_PORT))
+                        
                         print("Waiting for host to respond...")
 
                         waitForHost = True
