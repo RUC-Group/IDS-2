@@ -112,6 +112,7 @@ while True:
                         print("You've beaten the opponents' " + "?" +  " with your " + labels[np.argmax(prediction)] + "!") 
                         readPlayerInput = True
                         waitForHost = False
+                        hostResponse=""
 
                         playerScore += 1
                         print(playerScore)
@@ -120,11 +121,13 @@ while True:
                         print("You've lost to the opponents' " + "?" + " with your " + labels[np.argmax(prediction)] + "!")
                         readPlayerInput = True
                         waitForHost = False
+                        hostResponse=""
                 
                 if hostResponse == "DRAW":
                         print("You've both drawn the same gesture" + labels[np.argmax(prediction)] + "neither of you win")
                         readPlayerInput = True
                         waitForHost = False
+                        hostResponse=""
 
         if key == ord('q'):
                 break
