@@ -1,3 +1,4 @@
+import time
 import cv2
 import numpy as np
 from PIL import Image
@@ -9,7 +10,7 @@ import socket
 UDP_IP = "172.20.10.2"
 UDP_PORT = 6566
 
-HOST_IP = "172.20.10.10"
+HOST_IP = "172.20.10.4"
 HOST_PORT = 6565
 
 
@@ -20,7 +21,8 @@ sock.bind((UDP_IP, UDP_PORT))
 
 model = models.load_model("keras_model.h5")
 video = cv2.VideoCapture(0)
-readPlayerInput = True
+playerReady = True
+readPlayerInput = False
 waitForHost = False
 playerScore = 0
 
@@ -28,6 +30,12 @@ def listen_to_udp():
     while True:
         data, addr = sock.recvfrom(1024)  # buffer size is 1024 bytes
         print(f'\nIncoming message: {data.decode("utf-8")}')
+#        if data.decode("utf-8") == "received":
+        global playerReady
+        playerReady = False
+                
+        global readPlayerInput
+        readPlayerInput = True
 
 
 def listen_to_input():
@@ -47,6 +55,11 @@ while True:
 
         key=cv2.waitKey(1)
 
+        if playerReady:
+                sock.sendto(bytes(str("ready"), encoding='utf8'), (HOST_IP, HOST_PORT))
+                time.sleep(3)
+
+        
         if readPlayerInput:
                 _, frame = video.read()
                 #Convert the captured frame into RGB
@@ -68,10 +81,11 @@ while True:
                 cv2.imshow("Prediction", frame)
 
                 #[PROJECT] PLAYER-PROMPTED CONFIRMATION OF HAND-GESTURE:
+                
                 if key == ord('c'):
 
                         #[PROJECT] TRANSMISSION OF PREDICTION TO HOST:
-                        print("Hand gestuqre to send: " + labels[np.argmax(prediction)])
+                        print("Hand gesture to send: " + labels[np.argmax(prediction)])
                         sock.sendto(bytes(str(labels[np.argmax(prediction)]), encoding='utf8'), (HOST_IP, HOST_PORT))
                         
                         print("Waiting for host to respond...")
