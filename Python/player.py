@@ -7,6 +7,21 @@ import tensorflow as tf
 import threading
 import socket
 
+# font
+font = cv2.FONT_HERSHEY_SIMPLEX
+  
+# org
+org = (50, 50)
+  
+# fontScale
+fontScale = 1
+   
+# Blue color in BGR
+color = (255, 0, 0)
+  
+# Line thickness of 2 px
+thickness = 2
+
 UDP_IP = "172.20.10.2"
 UDP_PORT = 6566
 
@@ -88,6 +103,9 @@ while True:
                 #print(prediction.shape)
                 labels = ['scissor', 'rock', 'paper']
                 print(labels[np.argmax(prediction)])
+
+                frame = cv2.putText(frame,labels[np.argmax(prediction)], org, font, 
+                   fontScale, color, thickness, cv2.LINE_AA)
 
                 cv2.imshow("Prediction", frame)
 

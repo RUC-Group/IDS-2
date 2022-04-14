@@ -1,18 +1,14 @@
-from multiprocessing import connection
+import math
 import threading
 import socket
-import time
 
 import threading
 import time
- 
-def run():
-    while True:
-        print('thread running')
-        global stop_threads
-        if stop_threads:
-            break
+from unittest import result
 
+class player:
+    PLAYER_IP = ""
+    player_input=0
 
 HOST_IP = "172.20.10.10"
 HOST_PORT = 6565
@@ -23,8 +19,8 @@ sock.bind((HOST_IP, HOST_PORT))
 #PLAYER1_IP = "172.20.10.2"
 #PLAYER2_IP = "172.20.10.4"
 
-PLAYER1 = ""
-PLAYER2 = ""
+PLAYER1 = player()
+PLAYER2 = player()
 
 def await_ready():
     while True:
@@ -33,15 +29,15 @@ def await_ready():
         global PLAYER1
         global PLAYER2
         print(f'\nIncoming message {data.decode("utf-8")}') 
-        if PLAYER1=="":
-            PLAYER1=addr
-        if not(addr==PLAYER1):
-            PLAYER2=addr
-            sock.sendto(bytes(str("received"), encoding='utf8'), PLAYER1)
-            sock.sendto(bytes(str("You are player 1"), encoding='utf8'), PLAYER1)
+        if PLAYER1.PLAYER_IP=="":
+            PLAYER1.PLAYER_IP=addr
+        if not(addr==PLAYER1.PLAYER_IP):
+            PLAYER2.PLAYER_IP=addr
+            sock.sendto(bytes(str("received"), encoding='utf8'), PLAYER1.PLAYER_IP)
+            sock.sendto(bytes(str("You are player 1"), encoding='utf8'), PLAYER1.PLAYER_IP)
 
-            sock.sendto(bytes(str("received"), encoding='utf8'), PLAYER2)
-            sock.sendto(bytes(str("received. You are player 2"), encoding='utf8'), PLAYER2)
+            sock.sendto(bytes(str("received"), encoding='utf8'), PLAYER2.PLAYER_IP)
+            sock.sendto(bytes(str("received. You are player 2"), encoding='utf8'), PLAYER2.PLAYER_IP)
             global connected
             connected=True
             global waitInput
@@ -50,18 +46,19 @@ def await_ready():
 
 def listen_to_udp():
     while True:
-        global player1_input,player2_input,PLAYER1,PLAYER2,waitInput
+        global PLAYER1,PLAYER2,waitInput,processing
         data, addr = sock.recvfrom(1024)  # buffer size is 1024 bytes
         print(addr[0])
         print(f'\nIncoming message {data.decode("utf-8")}')
-        if addr==PLAYER1:
+        if addr==PLAYER1.PLAYER_IP:
             print(f'\nplayer 1 throws {data.decode("utf-8")}')
-            player1_input={data.decode("utf-8")}
-        if addr==PLAYER2:
+            PLAYER1.player_input=int(data.decode("utf-8"))
+        if addr==PLAYER2.PLAYER_IP:
             print(f'\nplayer 2 throws {data.decode("utf-8")}')
-            player2_input={data.decode("utf-8")}
-        if not(player1_input=="") and not(player2_input==""):
+            PLAYER2.player_input=int(data.decode("utf-8"))
+        if not(PLAYER1.player_input=="") and not(PLAYER2.player_input==""):
             waitInput=False
+            processing=True
             break
         
 
@@ -85,9 +82,13 @@ if __name__ == "__main__":
 
 connected = False
 waitInput=False
+processing=False
 
-player1_input=""
-player2_input=""
+def getPlayer(value):
+    if value==PLAYER1.player_input:
+        return PLAYER1,PLAYER2
+    else:
+        return PLAYER2,PLAYER1
 
 while True:
     if not(connected):
@@ -97,7 +98,44 @@ while True:
     
     if waitInput:
         #t3.join()
-        if not(t2.is_alive()):
-            t2.start()
-            t2.join()
+        #if not(t2.is_alive()):
+         #   t2.start()
+          #  t2.join()
+        #global PLAYER1,PLAYER2,waitInput,processing
+        data, addr = sock.recvfrom(1024)  # buffer size is 1024 bytes
+        print(addr[0])
+        print(f'\nIncoming message {data.decode("utf-8")}')
+        if addr==PLAYER1.PLAYER_IP and PLAYER1.player_input=="":
+            print(f'\nplayer 1 throws {data.decode("utf-8")}')
+            PLAYER1.player_input=int(data.decode("utf-8"))
+        if addr==PLAYER2.PLAYER_IP and PLAYER2.player_input=="":
+            print(f'\nplayer 2 throws {data.decode("utf-8")}')
+            PLAYER2.player_input=int(data.decode("utf-8"))
+        if not(PLAYER1.player_input=="") and not(PLAYER2.player_input==""):
+            waitInput=False
+            processing=True
+            #break
+
+    if processing:
+        maxValue = max(PLAYER1.player_input,PLAYER2.player_input)
+        minValue = min(PLAYER1.player_input,PLAYER2.player_input)
+        maxValuePlayer,minValuePlayer = getPlayer(maxValue)
+        PLAYER1.player_input=""
+        PLAYER2.player_input=""
+        result = maxValue-minValue
+        if result==0:
+            sock.sendto(bytes(str("DRAW"), encoding='utf8'), maxValuePlayer.PLAYER_IP)
+            sock.sendto(bytes(str("DRAW"), encoding='utf8'), minValuePlayer.PLAYER_IP)
+            processing=False
+            waitInput=True
+        elif result==1:
+            sock.sendto(bytes(str("WON"), encoding='utf8'), maxValuePlayer.PLAYER_IP)
+            sock.sendto(bytes(str("LOST"), encoding='utf8'), minValuePlayer.PLAYER_IP)
+            processing=False
+            waitInput=True
+        elif result==2:
+            sock.sendto(bytes(str("LOST"), encoding='utf8'), maxValuePlayer.PLAYER_IP)
+            sock.sendto(bytes(str("WON"), encoding='utf8'), minValuePlayer.PLAYER_IP)
+            processing=False
+            waitInput=True
 
