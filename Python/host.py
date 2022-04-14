@@ -1,13 +1,13 @@
 import threading
 import socket
 
-HOST_IP = "192.168.207.35"
+HOST_IP = "172.20.10.10"
 HOST_PORT = 6565
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # UDP
 sock.bind((HOST_IP, HOST_PORT))
 
-PLAYER1_IP = ""
+PLAYER1_IP = "172.20.10.2"
 PLAYER2_IP = ""
 
 
@@ -20,7 +20,7 @@ def listen_to_udp():
 def listen_to_input():
     while True:
         message = input('Chat input: ')
-        sock.sendto(bytes(str(message), encoding='utf8'), ("192.168.207.69", 6565))
+        sock.sendto(bytes(str(message), encoding='utf8'), (PLAYER1_IP, 6566))
 
 
 if __name__ == "__main__":
