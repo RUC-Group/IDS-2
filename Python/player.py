@@ -26,17 +26,22 @@ readPlayerInput = False
 waitForHost = False
 playerScore = 0
 
+LabelToNumber = {
+        "rock" : 1,
+        "paper" : 2,
+        "scissor" : 3
+}
+
 def listen_to_udp():
     while True:
         data, addr = sock.recvfrom(1024)  # buffer size is 1024 bytes
         print(f'\nIncoming message: {data.decode("utf-8")}')
-#        if data.decode("utf-8") == "received":
-        global playerReady
-        playerReady = False
+        if data.decode("utf-8") == "received":
+                global playerReady
+                playerReady = False
                 
-        global readPlayerInput
-        readPlayerInput = True
-
+                global readPlayerInput
+                readPlayerInput = True
 
 def listen_to_input():
     while True:
@@ -86,6 +91,9 @@ while True:
 
                         #[PROJECT] TRANSMISSION OF PREDICTION TO HOST:
                         print("Hand gesture to send: " + labels[np.argmax(prediction)])
+
+                        #LabelToNumber[labels[np.argmax(prediction)]]
+                        
                         sock.sendto(bytes(str(labels[np.argmax(prediction)]), encoding='utf8'), (HOST_IP, HOST_PORT))
                         
                         print("Waiting for host to respond...")
@@ -94,7 +102,8 @@ while True:
                         readPlayerInput = False
                         
         if waitForHost:
-                if key == ord('w'):
+                #CAN'T CALL "DATA" HERE, BECAUSE IT'S OUT OF SCOPE. MAKE IF-STATEMENTS IN "LISTEN TO UDP"
+                if data.decode("utf-8") == "you've lost":
                         print("You've beaten the opponents' " + "?" +  " with your " + labels[np.argmax(prediction)] + "!") 
                         readPlayerInput = True
                         waitForHost = False
@@ -102,7 +111,7 @@ while True:
                         playerScore += 1
                         print(playerScore)
 
-                if key == ord('l'):
+                if data.decode("utf-8") == "you've won":
                         print("You've lost to the opponents' " + "?" + " with your " + labels[np.argmax(prediction)] + "!")
                         readPlayerInput = True
                         waitForHost = False
