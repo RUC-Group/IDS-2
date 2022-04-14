@@ -102,7 +102,7 @@ while True:
 
                 #print(prediction.shape)
                 labels = ['scissor', 'rock', 'paper']
-                print(labels[np.argmax(prediction)])
+                #print(labels[np.argmax(prediction)])
 
                 frame = cv2.putText(frame,labels[np.argmax(prediction)], org, font, 
                    fontScale, color, thickness, cv2.LINE_AA)
@@ -142,7 +142,7 @@ while True:
                         hostResponse=""
                 
                 if hostResponse == "DRAW":
-                        print("You've both drawn the same gesture" + labels[np.argmax(prediction)] + "neither of you win")
+                        print("You've both drawn the same gesture: " + labels[np.argmax(prediction)] + ", neither of you win")
                         readPlayerInput = True
                         waitForHost = False
                         hostResponse=""
