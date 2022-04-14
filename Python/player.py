@@ -30,12 +30,12 @@ def listen_to_udp():
     while True:
         data, addr = sock.recvfrom(1024)  # buffer size is 1024 bytes
         print(f'\nIncoming message: {data.decode("utf-8")}')
-        if data.decode("utf-8") == "received":
-                global playerReady
-                playerReady = False
+#        if data.decode("utf-8") == "received":
+        global playerReady
+        playerReady = False
                 
-                global readPlayerInput
-                readPlayerInput = True
+        global readPlayerInput
+        readPlayerInput = True
 
 
 def listen_to_input():
