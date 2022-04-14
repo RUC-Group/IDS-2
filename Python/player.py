@@ -10,7 +10,7 @@ import socket
 UDP_IP = "172.20.10.2"
 UDP_PORT = 6566
 
-HOST_IP = "172.20.10.4"
+HOST_IP = "172.20.10.10"
 HOST_PORT = 6565
 
 
@@ -24,6 +24,7 @@ video = cv2.VideoCapture(0)
 playerReady = True
 readPlayerInput = False
 waitForHost = False
+hostResponse = ""
 playerScore = 0
 
 LabelToNumber = {
@@ -42,6 +43,11 @@ def listen_to_udp():
                 
                 global readPlayerInput
                 readPlayerInput = True
+        
+        if waitForHost:
+                global hostResponse
+                hostResponse = data.decode("utf-8")
+        #INCLUDE LISTENING FOR "YOU'VE LOST" OR "YOU'VE WON" RESPONSES FROM HOST
 
 def listen_to_input():
     while True:
@@ -91,10 +97,8 @@ while True:
 
                         #[PROJECT] TRANSMISSION OF PREDICTION TO HOST:
                         print("Hand gesture to send: " + labels[np.argmax(prediction)])
-
-                        #LabelToNumber[labels[np.argmax(prediction)]]
                         
-                        sock.sendto(bytes(str(labels[np.argmax(prediction)]), encoding='utf8'), (HOST_IP, HOST_PORT))
+                        sock.sendto(bytes(str(LabelToNumber[labels[np.argmax(prediction)]]), encoding='utf8'), (HOST_IP, HOST_PORT))
                         
                         print("Waiting for host to respond...")
 
@@ -103,7 +107,8 @@ while True:
                         
         if waitForHost:
                 #CAN'T CALL "DATA" HERE, BECAUSE IT'S OUT OF SCOPE. MAKE IF-STATEMENTS IN "LISTEN TO UDP"
-                if data.decode("utf-8") == "you've lost":
+                
+                if hostResponse == "WON":
                         print("You've beaten the opponents' " + "?" +  " with your " + labels[np.argmax(prediction)] + "!") 
                         readPlayerInput = True
                         waitForHost = False
@@ -111,8 +116,13 @@ while True:
                         playerScore += 1
                         print(playerScore)
 
-                if data.decode("utf-8") == "you've won":
+                if hostResponse == "LOST":
                         print("You've lost to the opponents' " + "?" + " with your " + labels[np.argmax(prediction)] + "!")
+                        readPlayerInput = True
+                        waitForHost = False
+                
+                if hostResponse == "DRAW":
+                        print("You've both drawn the same gesture" + labels[np.argmax(prediction)] + "neither of you win")
                         readPlayerInput = True
                         waitForHost = False
 
