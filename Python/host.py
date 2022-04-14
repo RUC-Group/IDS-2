@@ -28,6 +28,7 @@ PLAYER2 = ""
 
 def await_ready():
     while True:
+        
         data, addr = sock.recvfrom(1024)  # buffer size is 1024 bytes
         global PLAYER1
         global PLAYER2
@@ -43,15 +44,26 @@ def await_ready():
             sock.sendto(bytes(str("received. You are player 2"), encoding='utf8'), PLAYER2)
             global connected
             connected=True
-            global game
-            game=True
+            global waitInput
+            waitInput=True
             break
 
 def listen_to_udp():
     while True:
+        global player1_input,player2_input,PLAYER1,PLAYER2,waitInput
         data, addr = sock.recvfrom(1024)  # buffer size is 1024 bytes
         print(addr[0])
-        print(f'\nIncoming message {data.decode("utf-8")}')   
+        print(f'\nIncoming message {data.decode("utf-8")}')
+        if addr==PLAYER1:
+            print(f'\nplayer 1 throws {data.decode("utf-8")}')
+            player1_input={data.decode("utf-8")}
+        if addr==PLAYER2:
+            print(f'\nplayer 2 throws {data.decode("utf-8")}')
+            player2_input={data.decode("utf-8")}
+        if not(player1_input=="") and not(player2_input==""):
+            waitInput=False
+            break
+        
 
 
 
@@ -72,15 +84,20 @@ if __name__ == "__main__":
     #t3.start()
 
 connected = False
-game=False
+waitInput=False
+
+player1_input=""
+player2_input=""
 
 while True:
     if not(connected):
         if not(t3.is_alive()):
             t3.start()
+            t3.join()
     
-    if game:
-        t3.join()
+    if waitInput:
+        #t3.join()
         if not(t2.is_alive()):
             t2.start()
+            t2.join()
 
