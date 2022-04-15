@@ -11,13 +11,13 @@ import socket
 font = cv2.FONT_HERSHEY_SIMPLEX
   
 # org
-org = (50, 50)
+org = (50, 200)
   
 # fontScale
 fontScale = 1
    
 # Blue color in BGR
-color = (255, 0, 0)
+color = (255, 255, 255)
   
 # Line thickness of 2 px
 thickness = 2
@@ -47,10 +47,10 @@ def listen_to_udp():
     while True:
         data, addr = sock.recvfrom(1024)  # buffer size is 1024 bytes
         if data.decode("utf-8") == "received":
-                global playerReady
-                playerReady = False
-                
-                global readPlayerInput
+                print("\nGame starts")
+                global playerReady,readPlayerInput
+
+                playerReady = False         
                 readPlayerInput = True
         
         if waitForHost:
@@ -87,9 +87,11 @@ while True:
                 #print(prediction.shape)
                 labels = ['scissor', 'rock', 'paper']
                 #print(labels[np.argmax(prediction)])
+                frame = cv2.rectangle(frame, (35,160),(180,220) , (0,0,0), -1)
 
                 frame = cv2.putText(frame,labels[np.argmax(prediction)], org, font, 
                    fontScale, color, thickness, cv2.LINE_AA)
+
 
                 cv2.imshow("Prediction", frame)
 
