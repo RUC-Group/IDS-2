@@ -82,7 +82,7 @@ while True:
             
     # state: processes the two player inputs
     if processing:
-        # get the bigger and the smaller of the two inputs (rock = 1, paper = 2, Scissors = 3)
+        # get the bigger and the smaller of the two inputs (rock = 1, paper = 2, scissors = 3)
         maxValue = max(PLAYER1.player_input,PLAYER2.player_input)
         minValue = min(PLAYER1.player_input,PLAYER2.player_input)
         maxValuePlayer,minValuePlayer = getPlayer(maxValue)             #  get players from their inputs 
