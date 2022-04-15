@@ -1,6 +1,4 @@
 import socket
-
-import threading
 from unittest import result
 
 class player:
@@ -32,27 +30,37 @@ def getPlayer(value):
     else:
         return PLAYER2,PLAYER1
 
+# main loop of the host
 while True:
+    # state: there is no connection
     if not(connected):
         data, addr = sock.recvfrom(1024)  # buffer size is 1024 bytes
         print(f'\nIncoming message {data.decode("utf-8")}') 
+
+        # if player one not defined
         if PLAYER1.PLAYER_IP=="":
-            PLAYER1.PLAYER_IP=addr
+            PLAYER1.PLAYER_IP=addr # define player one to be first pc to connect
+        # if the most recent ip to connect isnt the player 1
         if not(addr==PLAYER1.PLAYER_IP):
-            PLAYER2.PLAYER_IP=addr
+            PLAYER2.PLAYER_IP=addr # define player 2 to the second adress to connect
+
+            # inform the first player that they are player 1
             sock.sendto(bytes(str("received"), encoding='utf8'), PLAYER1.PLAYER_IP)
             sock.sendto(bytes(str("You are player 1"), encoding='utf8'), PLAYER1.PLAYER_IP)
 
+            # inform the second player that they are player 2
             sock.sendto(bytes(str("received"), encoding='utf8'), PLAYER2.PLAYER_IP)
             sock.sendto(bytes(str("received. You are player 2"), encoding='utf8'), PLAYER2.PLAYER_IP)
 
+            # switch state
             connected=True
             waitInput=True
             
-    
+    # state: waiting for input from the two players
     if waitInput:
         data, addr = sock.recvfrom(1024)  # buffer size is 1024 bytes
 
+        # if IP in msg is player 1's and player 1 doesnt have an input saved
         if addr==PLAYER1.PLAYER_IP and PLAYER1.player_input==0:
             print(f'\n({addr[0]}) player 1 throws {data.decode("utf-8")}')
             PLAYER1.player_input=LabelToNumber[data.decode("utf-8")]
