@@ -105,10 +105,10 @@ while True:
         data, addr = sock.recvfrom(1024)  # buffer size is 1024 bytes
         print(addr[0])
         print(f'\nIncoming message {data.decode("utf-8")}')
-        if addr==PLAYER1.PLAYER_IP and PLAYER1.player_input=="":
+        if addr==PLAYER1.PLAYER_IP and PLAYER1.player_input==0:
             print(f'\nplayer 1 throws {data.decode("utf-8")}')
             PLAYER1.player_input=int(data.decode("utf-8"))
-        if addr==PLAYER2.PLAYER_IP and PLAYER2.player_input=="":
+        if addr==PLAYER2.PLAYER_IP and PLAYER2.player_input==0:
             print(f'\nplayer 2 throws {data.decode("utf-8")}')
             PLAYER2.player_input=int(data.decode("utf-8"))
         if not(PLAYER1.player_input=="") and not(PLAYER2.player_input==""):
