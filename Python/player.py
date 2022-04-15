@@ -22,10 +22,10 @@ color = (255, 0, 0)
 # Line thickness of 2 px
 thickness = 2
 
-UDP_IP = "172.20.10.2"
+UDP_IP = "172.20.10.10"
 UDP_PORT = 6566
 
-HOST_IP = "172.20.10.10"
+HOST_IP = "172.20.10.3"
 HOST_PORT = 6565
 
 
@@ -73,8 +73,8 @@ if __name__ == "__main__":
     t1 = threading.Thread(target=listen_to_input, args=())
     t2 = threading.Thread(target=listen_to_udp, args=())
 
-    t1.start()
-    t2.start()
+    #t1.start()
+    #t2.start()
 
 
 while True:

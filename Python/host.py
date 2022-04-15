@@ -111,7 +111,7 @@ while True:
         if addr==PLAYER2.PLAYER_IP and PLAYER2.player_input==0:
             print(f'\nplayer 2 throws {data.decode("utf-8")}')
             PLAYER2.player_input=int(data.decode("utf-8"))
-        if not(PLAYER1.player_input=="") and not(PLAYER2.player_input==""):
+        if not(PLAYER1.player_input==0) and not(PLAYER2.player_input==0):
             waitInput=False
             processing=True
             #break
