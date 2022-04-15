@@ -116,7 +116,7 @@ while True:
                         hostResponse=""
 
                         playerScore += 1
-                        print("Your Score: "+ playerScore)
+                        print("Your Score: "+ str(playerScore))
 
                 if hostResponse == "LOST":
                         print("You've lost with your " + labels[np.argmax(prediction)] + "!")
