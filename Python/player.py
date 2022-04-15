@@ -45,7 +45,7 @@ playerScore = 0
 def listen_to_udp():
     while True:
         data, addr = sock.recvfrom(1024)  # buffer size is 1024 bytes
-        print(f'\nIncoming message: {data.decode("utf-8")}')
+        print(f'\nResult: {data.decode("utf-8")}')
         if data.decode("utf-8") == "received":
                 global playerReady
                 playerReady = False
@@ -108,7 +108,7 @@ while True:
                 if key == ord('c'):
 
                         #[PROJECT] TRANSMISSION OF PREDICTION TO HOST:
-                        print("Hand gesture to send: " + labels[np.argmax(prediction)])
+                        print("\nHand gesture to send: " + labels[np.argmax(prediction)])
                         
                         sock.sendto(bytes(str(labels[np.argmax(prediction)]), encoding='utf8'), (HOST_IP, HOST_PORT))
                         
