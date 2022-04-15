@@ -46,14 +46,14 @@ playerScore = 0
 def listen_to_udp():
     while True:
         data, addr = sock.recvfrom(1024)  # buffer size is 1024 bytes
-        if data.decode("utf-8") == "received":
+        if data.decode("utf-8") == "received": #Player receives a message from host to start the game
                 print("\nGame starts")
                 global playerReady,readPlayerInput
 
                 playerReady = False         
                 readPlayerInput = True
         
-        if waitForHost:
+        if waitForHost: #Player receives message from host notifing if he won/lost/draws
                 global hostResponse
                 hostResponse = data.decode("utf-8")
 
@@ -66,7 +66,7 @@ while True:
         key=cv2.waitKey(1)
 
         if playerReady:
-                sock.sendto(bytes(str("ready"), encoding='utf8'), (HOST_IP, HOST_PORT))
+                sock.sendto(bytes(str("ready"), encoding='utf8'), (HOST_IP, HOST_PORT)) #player sends host messages to connect
                 time.sleep(3)
         
         if readPlayerInput:
@@ -94,11 +94,11 @@ while True:
 
                 cv2.imshow("Prediction", frame)
 
-                #[PROJECT] PLAYER-PROMPTED CONFIRMATION OF HAND-GESTURE:
+                #PLAYER-PROMPTED CONFIRMATION OF HAND-GESTURE:
                 
                 if key == ord('c'):
 
-                        #[PROJECT] TRANSMISSION OF PREDICTION TO HOST:
+                        #TRANSMISSION OF PREDICTION TO HOST:
                         print("\nHand gesture to send: " + labels[np.argmax(prediction)])
                         
                         sock.sendto(bytes(str(labels[np.argmax(prediction)]), encoding='utf8'), (HOST_IP, HOST_PORT))
@@ -109,7 +109,7 @@ while True:
                         readPlayerInput = False
                         
         if waitForHost:
-                #CAN'T CALL "DATA" HERE, BECAUSE IT'S OUT OF SCOPE. MAKE IF-STATEMENTS IN "LISTEN TO UDP"
+                #Player handels the outcome of the game
                 if hostResponse == "WON":
                         print("You've won with your " + labels[np.argmax(prediction)] + "!") 
                         readPlayerInput = True
@@ -131,7 +131,7 @@ while True:
                         waitForHost = False
                         hostResponse=""
 
-        if key == ord('q'):
+        if key == ord('q'): #Player presses q to quit the game
                 break
 
 video.release()
