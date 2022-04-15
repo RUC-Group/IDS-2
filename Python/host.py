@@ -7,7 +7,7 @@ class player:
     PLAYER_IP = ""
     player_input=0
 
-HOST_IP = "192.168.137.69"
+HOST_IP = socket.gethostbyname(socket.gethostname())
 HOST_PORT = 6565
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # UDP
@@ -73,7 +73,7 @@ while True:
         PLAYER1.player_input=0
         PLAYER2.player_input=0
         result = maxValue-minValue
-        
+
         if result==0:
             sock.sendto(bytes(str("DRAW"), encoding='utf8'), maxValuePlayer.PLAYER_IP)
             sock.sendto(bytes(str("DRAW"), encoding='utf8'), minValuePlayer.PLAYER_IP)
