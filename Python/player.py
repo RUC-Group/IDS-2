@@ -43,6 +43,7 @@ waitForHost = False
 hostResponse = ""
 playerScore = 0
 
+<<<<<<< Updated upstream
 def listen_to_udp():
     while True:
         data, addr = sock.recvfrom(1024)  # buffer size is 1024 bytes
@@ -72,6 +73,8 @@ if __name__ == "__main__":
     t2.start()
 
 
+=======
+>>>>>>> Stashed changes
 while True:
 
         key=cv2.waitKey(1)
@@ -79,6 +82,10 @@ while True:
         if playerReady:
                 sock.sendto(bytes(str("ready"), encoding='utf8'), (HOST_IP, HOST_PORT))
                 time.sleep(3)
+                data, addr = sock.recvfrom(1024)
+                if data.decode("utf-8") == "received":
+                        playerReady = False
+                        readPlayerInput = True
 
         
         if readPlayerInput:
@@ -120,18 +127,28 @@ while True:
                         
         if waitForHost:
                 #CAN'T CALL "DATA" HERE, BECAUSE IT'S OUT OF SCOPE. MAKE IF-STATEMENTS IN "LISTEN TO UDP"
-                
+                if hostResponse=="":
+                        data, addr = sock.recvfrom(1024)
+                        hostResponse = data.decode("utf-8")
                 if hostResponse == "WON":
+<<<<<<< Updated upstream
                         print("You've won with your " + labels[np.argmax(prediction)] + "!") 
+=======
+                        print("You've beaten the opponent with your " + labels[np.argmax(prediction)] + "!") 
+>>>>>>> Stashed changes
                         readPlayerInput = True
                         waitForHost = False
                         hostResponse=""
 
                         playerScore += 1
-                        print(playerScore)
+                        print("Your Score: "+ playerScore)
 
                 if hostResponse == "LOST":
+<<<<<<< Updated upstream
                         print("You've lost with your " + labels[np.argmax(prediction)] + "!")
+=======
+                        print("You've lost to the opponent with your " + labels[np.argmax(prediction)] + "!")
+>>>>>>> Stashed changes
                         readPlayerInput = True
                         waitForHost = False
                         hostResponse=""

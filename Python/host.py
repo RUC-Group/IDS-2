@@ -1,6 +1,4 @@
 import socket
-
-import threading
 from unittest import result
 
 class player:
