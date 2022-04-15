@@ -43,18 +43,31 @@ waitForHost = False
 hostResponse = ""
 playerScore = 0
 
+def listen_to_udp():
+    while True:
+        data, addr = sock.recvfrom(1024)  # buffer size is 1024 bytes
+        if data.decode("utf-8") == "received":
+                global playerReady
+                playerReady = False
+                
+                global readPlayerInput
+                readPlayerInput = True
+        
+        if waitForHost:
+                global hostResponse
+                hostResponse = data.decode("utf-8")
+
+if __name__ == "__main__":
+    t2 = threading.Thread(target=listen_to_udp, args=())
+    t2.start()
+
 while True:
-        data, addr = sock.recvfrom(1024)
 
         key=cv2.waitKey(1)
 
         if playerReady:
                 sock.sendto(bytes(str("ready"), encoding='utf8'), (HOST_IP, HOST_PORT))
-                #time.sleep(3)
-                #data, addr = sock.recvfrom(1024)
-                if data.decode("utf-8") == "received":
-                        playerReady = False
-                        readPlayerInput = True
+                time.sleep(3)
 
         
         if readPlayerInput:
@@ -96,8 +109,6 @@ while True:
                         
         if waitForHost:
                 #CAN'T CALL "DATA" HERE, BECAUSE IT'S OUT OF SCOPE. MAKE IF-STATEMENTS IN "LISTEN TO UDP"
-                if hostResponse=="":
-                        hostResponse = data.decode("utf-8")
                 if hostResponse == "WON":
                         print("You've won with your " + labels[np.argmax(prediction)] + "!") 
                         readPlayerInput = True
