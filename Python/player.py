@@ -43,38 +43,6 @@ waitForHost = False
 hostResponse = ""
 playerScore = 0
 
-<<<<<<< Updated upstream
-def listen_to_udp():
-    while True:
-        data, addr = sock.recvfrom(1024)  # buffer size is 1024 bytes
-        #print(f'\nResult: {data.decode("utf-8")}')
-        if data.decode("utf-8") == "received":
-                global playerReady
-                playerReady = False
-                
-                global readPlayerInput
-                readPlayerInput = True
-        
-        if waitForHost:
-                global hostResponse
-                hostResponse = data.decode("utf-8")
-        #INCLUDE LISTENING FOR "YOU'VE LOST" OR "YOU'VE WON" RESPONSES FROM HOST
-
-def listen_to_input():
-    while True:
-        message = input('Chat input: ')
-        sock.sendto(bytes(str(message), encoding='utf8'), (HOST_IP, HOST_PORT))
-
-if __name__ == "__main__":
-    t1 = threading.Thread(target=listen_to_input, args=())
-    t2 = threading.Thread(target=listen_to_udp, args=())
-
-    #t1.start()
-    t2.start()
-
-
-=======
->>>>>>> Stashed changes
 while True:
 
         key=cv2.waitKey(1)
@@ -131,11 +99,7 @@ while True:
                         data, addr = sock.recvfrom(1024)
                         hostResponse = data.decode("utf-8")
                 if hostResponse == "WON":
-<<<<<<< Updated upstream
                         print("You've won with your " + labels[np.argmax(prediction)] + "!") 
-=======
-                        print("You've beaten the opponent with your " + labels[np.argmax(prediction)] + "!") 
->>>>>>> Stashed changes
                         readPlayerInput = True
                         waitForHost = False
                         hostResponse=""
@@ -144,11 +108,7 @@ while True:
                         print("Your Score: "+ playerScore)
 
                 if hostResponse == "LOST":
-<<<<<<< Updated upstream
                         print("You've lost with your " + labels[np.argmax(prediction)] + "!")
-=======
-                        print("You've lost to the opponent with your " + labels[np.argmax(prediction)] + "!")
->>>>>>> Stashed changes
                         readPlayerInput = True
                         waitForHost = False
                         hostResponse=""
