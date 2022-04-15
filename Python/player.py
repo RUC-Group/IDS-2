@@ -58,8 +58,8 @@ def listen_to_udp():
                 hostResponse = data.decode("utf-8")
 
 if __name__ == "__main__":
-    t2 = threading.Thread(target=listen_to_udp, args=())
-    t2.start()
+    t1 = threading.Thread(target=listen_to_udp, args=())
+    t1.start()
 
 while True:
 
@@ -68,7 +68,6 @@ while True:
         if playerReady:
                 sock.sendto(bytes(str("ready"), encoding='utf8'), (HOST_IP, HOST_PORT))
                 time.sleep(3)
-
         
         if readPlayerInput:
                 _, frame = video.read()
