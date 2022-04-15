@@ -22,6 +22,12 @@ sock.bind((HOST_IP, HOST_PORT))
 PLAYER1 = player()
 PLAYER2 = player()
 
+LabelToNumber = {
+        "rock" : 1,
+        "paper" : 2,
+        "scissor" : 3
+}
+
 def await_ready():
     while True:
         
@@ -56,7 +62,7 @@ def listen_to_udp():
         if addr==PLAYER2.PLAYER_IP:
             print(f'\nplayer 2 throws {data.decode("utf-8")}')
             PLAYER2.player_input=int(data.decode("utf-8"))
-        if not(PLAYER1.player_input=="") and not(PLAYER2.player_input==""):
+        if not(PLAYER1.player_input==0) and not(PLAYER2.player_input==0):
             waitInput=False
             processing=True
             break
@@ -107,10 +113,10 @@ while True:
         print(f'\nIncoming message {data.decode("utf-8")}')
         if addr==PLAYER1.PLAYER_IP and PLAYER1.player_input==0:
             print(f'\nplayer 1 throws {data.decode("utf-8")}')
-            PLAYER1.player_input=int(data.decode("utf-8"))
+            PLAYER1.player_input=LabelToNumber[data.decode("utf-8")]
         if addr==PLAYER2.PLAYER_IP and PLAYER2.player_input==0:
             print(f'\nplayer 2 throws {data.decode("utf-8")}')
-            PLAYER2.player_input=int(data.decode("utf-8"))
+            PLAYER2.player_input=LabelToNumber[data.decode("utf-8")]
         if not(PLAYER1.player_input==0) and not(PLAYER2.player_input==0):
             waitInput=False
             processing=True
@@ -120,8 +126,8 @@ while True:
         maxValue = max(PLAYER1.player_input,PLAYER2.player_input)
         minValue = min(PLAYER1.player_input,PLAYER2.player_input)
         maxValuePlayer,minValuePlayer = getPlayer(maxValue)
-        PLAYER1.player_input=""
-        PLAYER2.player_input=""
+        PLAYER1.player_input=0
+        PLAYER2.player_input=0
         result = maxValue-minValue
         if result==0:
             sock.sendto(bytes(str("DRAW"), encoding='utf8'), maxValuePlayer.PLAYER_IP)
