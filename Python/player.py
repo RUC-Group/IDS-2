@@ -46,7 +46,7 @@ playerScore = 0
 def listen_to_udp():
     while True:
         data, addr = sock.recvfrom(1024)  # buffer size is 1024 bytes
-        print(f'\nResult: {data.decode("utf-8")}')
+        #print(f'\nResult: {data.decode("utf-8")}')
         if data.decode("utf-8") == "received":
                 global playerReady
                 playerReady = False
@@ -122,7 +122,7 @@ while True:
                 #CAN'T CALL "DATA" HERE, BECAUSE IT'S OUT OF SCOPE. MAKE IF-STATEMENTS IN "LISTEN TO UDP"
                 
                 if hostResponse == "WON":
-                        print("You've beaten the opponents' " + "?" +  " with your " + labels[np.argmax(prediction)] + "!") 
+                        print("You've won with your " + labels[np.argmax(prediction)] + "!") 
                         readPlayerInput = True
                         waitForHost = False
                         hostResponse=""
@@ -131,13 +131,13 @@ while True:
                         print(playerScore)
 
                 if hostResponse == "LOST":
-                        print("You've lost to the opponents' " + "?" + " with your " + labels[np.argmax(prediction)] + "!")
+                        print("You've lost with your " + labels[np.argmax(prediction)] + "!")
                         readPlayerInput = True
                         waitForHost = False
                         hostResponse=""
                 
                 if hostResponse == "DRAW":
-                        print("You've both drawn the same gesture: " + labels[np.argmax(prediction)] + ", neither of you win")
+                        print("You've both drawn " + labels[np.argmax(prediction)] + ", neither of you win")
                         readPlayerInput = True
                         waitForHost = False
                         hostResponse=""
