@@ -11,13 +11,13 @@ import socket
 font = cv2.FONT_HERSHEY_SIMPLEX
   
 # org
-org = (50, 50)
+org = (50, 200)
   
 # fontScale
 fontScale = 1
    
 # Blue color in BGR
-color = (255, 0, 0)
+color = (255, 255, 255)
   
 # Line thickness of 2 px
 thickness = 2
@@ -46,29 +46,28 @@ playerScore = 0
 def listen_to_udp():
     while True:
         data, addr = sock.recvfrom(1024)  # buffer size is 1024 bytes
-        if data.decode("utf-8") == "received":
-                global playerReady
-                playerReady = False
-                
-                global readPlayerInput
+        if data.decode("utf-8") == "received": #Player receives a message from host to start the game
+                print("\nGame starts")
+                global playerReady,readPlayerInput
+
+                playerReady = False         
                 readPlayerInput = True
         
-        if waitForHost:
+        if waitForHost: #Player receives message from host notifing if he won/lost/draws
                 global hostResponse
                 hostResponse = data.decode("utf-8")
 
 if __name__ == "__main__":
-    t2 = threading.Thread(target=listen_to_udp, args=())
-    t2.start()
+    t1 = threading.Thread(target=listen_to_udp, args=())
+    t1.start()
 
 while True:
 
         key=cv2.waitKey(1)
 
         if playerReady:
-                sock.sendto(bytes(str("ready"), encoding='utf8'), (HOST_IP, HOST_PORT))
+                sock.sendto(bytes(str("ready"), encoding='utf8'), (HOST_IP, HOST_PORT)) #player sends host messages to connect
                 time.sleep(3)
-
         
         if readPlayerInput:
                 _, frame = video.read()
@@ -87,17 +86,19 @@ while True:
                 #print(prediction.shape)
                 labels = ['scissor', 'rock', 'paper']
                 #print(labels[np.argmax(prediction)])
+                frame = cv2.rectangle(frame, (35,160),(180,220) , (0,0,0), -1)
 
                 frame = cv2.putText(frame,labels[np.argmax(prediction)], org, font, 
                    fontScale, color, thickness, cv2.LINE_AA)
 
+
                 cv2.imshow("Prediction", frame)
 
-                #[PROJECT] PLAYER-PROMPTED CONFIRMATION OF HAND-GESTURE:
+                #PLAYER-PROMPTED CONFIRMATION OF HAND-GESTURE:
                 
                 if key == ord('c'):
 
-                        #[PROJECT] TRANSMISSION OF PREDICTION TO HOST:
+                        #TRANSMISSION OF PREDICTION TO HOST:
                         print("\nHand gesture to send: " + labels[np.argmax(prediction)])
                         
                         sock.sendto(bytes(str(labels[np.argmax(prediction)]), encoding='utf8'), (HOST_IP, HOST_PORT))
@@ -108,7 +109,7 @@ while True:
                         readPlayerInput = False
                         
         if waitForHost:
-                #CAN'T CALL "DATA" HERE, BECAUSE IT'S OUT OF SCOPE. MAKE IF-STATEMENTS IN "LISTEN TO UDP"
+                #Player handels the outcome of the game
                 if hostResponse == "WON":
                         print("You've won with your " + labels[np.argmax(prediction)] + "!") 
                         readPlayerInput = True
@@ -130,7 +131,7 @@ while True:
                         waitForHost = False
                         hostResponse=""
 
-        if key == ord('q'):
+        if key == ord('q'): #Player presses q to quit the game
                 break
 
 video.release()
