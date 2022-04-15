@@ -10,7 +10,7 @@ class player:
     PLAYER_IP = ""
     player_input=0
 
-HOST_IP = "172.20.10.10"
+HOST_IP = "192.168.137.69"
 HOST_PORT = 6565
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # UDP
@@ -109,13 +109,11 @@ while True:
           #  t2.join()
         #global PLAYER1,PLAYER2,waitInput,processing
         data, addr = sock.recvfrom(1024)  # buffer size is 1024 bytes
-        print(addr[0])
-        print(f'\nIncoming message {data.decode("utf-8")}')
         if addr==PLAYER1.PLAYER_IP and PLAYER1.player_input==0:
-            print(f'\nplayer 1 throws {data.decode("utf-8")}')
+            print(f'\n({addr[0]}) player 1 throws {data.decode("utf-8")}')
             PLAYER1.player_input=LabelToNumber[data.decode("utf-8")]
         if addr==PLAYER2.PLAYER_IP and PLAYER2.player_input==0:
-            print(f'\nplayer 2 throws {data.decode("utf-8")}')
+            print(f'\n({addr[0]}) player 2 throws {data.decode("utf-8")}')
             PLAYER2.player_input=LabelToNumber[data.decode("utf-8")]
         if not(PLAYER1.player_input==0) and not(PLAYER2.player_input==0):
             waitInput=False
