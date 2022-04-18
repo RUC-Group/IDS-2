@@ -26,7 +26,7 @@ thickness = 2
 UDP_IP = socket.gethostbyname(socket.gethostname())
 UDP_PORT = 6566
 
-HOST_IP = "192.168.137.69"
+HOST_IP = "172.20.10.3"
 HOST_PORT = 6565
 
 
@@ -35,7 +35,7 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # UDP
 sock.bind((UDP_IP, UDP_PORT))
 
 
-model = models.load_model("keras_model.h5")
+model = models.load_model("Python/keras_model.h5")
 video = cv2.VideoCapture(0)
 playerReady = True
 readPlayerInput = False
