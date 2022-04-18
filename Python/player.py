@@ -31,7 +31,7 @@ HOST_PORT = 6565
 
 
 
-sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # UDP
+sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # UDP
 sock.bind((UDP_IP, UDP_PORT))
 
 

@@ -11,7 +11,7 @@ HOST_IP = socket.gethostbyname(socket.gethostname())
 HOST_PORT = 6565
 
 # socket for sending and recieving data
-sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.bind((HOST_IP, HOST_PORT))
 
 PLAYER1 = player()
