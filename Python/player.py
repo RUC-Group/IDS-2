@@ -22,7 +22,6 @@ color = (255, 255, 255)
 # Line thickness of 2 px
 thickness = 2
 
-#UDP_IP = "192.168.137.35"
 UDP_IP = socket.gethostbyname(socket.gethostname())
 UDP_PORT = 6566
 
