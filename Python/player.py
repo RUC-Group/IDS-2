@@ -30,7 +30,7 @@ HOST_PORT = 6565
 
 
 
-sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # UDP
+sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # UDP if TCP use socket.SOCK_STREAM
 sock.bind((UDP_IP, UDP_PORT))
 
 
